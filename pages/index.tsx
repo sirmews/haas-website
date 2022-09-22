@@ -42,7 +42,7 @@ const Home: NextPage = () => {
   }, []);
 
   return (
-    <div className="bg-gradient-to-b from-gray-800 to-gray-900 text-gray-200 h-screen">
+    <>
       <Head>
         <title>HaaS</title>
         <meta name="description" content="Habits as a Service" />
@@ -60,7 +60,7 @@ const Home: NextPage = () => {
       </main>
 
       <footer></footer>
-    </div>
+    </>
   );
 };
 

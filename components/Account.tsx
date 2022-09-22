@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../utils/supabase";
 import type { Session, PostgrestError } from "@supabase/supabase-js";
+import Header from "./Header";
 
 type Username = string | null;
 type Website = string | null;
@@ -85,50 +86,60 @@ export default function Account({ session }: { session: Session }) {
   }
 
   return (
-    <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-      <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-        <div>
-          <label htmlFor="email">Email</label>
-          <input id="email" type="text" value={session.user?.email} disabled />
-        </div>
-        <div>
-          <label htmlFor="username">Name</label>
-          <input
-            id="username"
-            type="text"
-            value={username || ""}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="website">Website</label>
-          <input
-            id="website"
-            type="website"
-            value={website || ""}
-            onChange={(e) => setWebsite(e.target.value)}
-          />
-        </div>
+    <>
+      <Header headline="Your Account" subheadline="Everything you" />
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md text-gray-800">
+        <div className="bg-white py-8 px-4 shadow rounded-lg sm:px-10">
+          <div className="space-y-6">
+            <div>
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="text"
+                value={session.user?.email}
+                disabled
+              />
+            </div>
+            <div>
+              <label htmlFor="username">Name</label>
+              <input
+                id="username"
+                type="text"
+                value={username || ""}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="website">Website</label>
+              <input
+                id="website"
+                type="website"
+                value={website || ""}
+                onChange={(e) => setWebsite(e.target.value)}
+              />
+            </div>
 
-        <div>
-          <button
-            className="button primary block"
-            onClick={() => updateProfile({ username, website, avatar_url })}
-            disabled={loading}
-          >
-            {loading ? "Loading ..." : "Update"}
-          </button>
-        </div>
+            <div>
+              <button
+                className="button primary block"
+                onClick={() => updateProfile({ username, website, avatar_url })}
+                disabled={loading}
+              >
+                {loading ? "Loading ..." : "Update"}
+              </button>
+            </div>
 
-        <div>
-          <button
-            className="button block"
-            onClick={() => supabase.auth.signOut()}
-          >
-            Sign Out
-          </button>
+            <div>
+              <button
+                className="button block"
+                onClick={() => supabase.auth.signOut()}
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

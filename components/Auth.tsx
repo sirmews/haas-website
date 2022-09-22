@@ -1,5 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { supabase } from "../utils/supabase";
+import type { ApiError } from "@supabase/supabase-js";
+import Header from "./Header";
+import Button from "./Button";
 
 export default function Auth() {
   const [loading, setLoading] = useState(false);
@@ -9,13 +12,21 @@ export default function Auth() {
     try {
       setLoading(true);
       const { error } = await supabase.auth.signIn({ email });
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
       alert("Check your email for the login link!");
     } catch (error) {
-      console.error("error", error);
+      const { message } = error as ApiError;
+      alert(message);
     } finally {
       setLoading(false);
     }
+  };
+
+  const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    handleLogin(email);
   };
 
   return (
@@ -45,16 +56,7 @@ export default function Auth() {
               </div>
             </div>
             <div>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLogin(email);
-                }}
-                className="flex w-full justify-center rounded-md border border-transparent bg-gray-800 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
-                disabled={loading}
-              >
-                <span>{loading ? "Loading" : "Send magic link"}</span>
-              </button>
+              <Button onClick={onClick} disabled={loading} />
             </div>
           </div>
         </div>

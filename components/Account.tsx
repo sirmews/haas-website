@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "../utils/supabase";
 import type { Session, PostgrestError } from "@supabase/supabase-js";
 import Header from "./Header";
+import getCurrentUser from "../utils/getCurrentUser";
+import { getProfile as getProfileQuery } from "../utils/queries";
 
 type Username = string | null;
 type Website = string | null;
@@ -23,26 +25,12 @@ export default function Account({ session }: { session: Session }) {
     getProfile();
   }, [session]);
 
-  async function getCurrentUser() {
-    const session = await supabase.auth.session();
-
-    if (!session?.user) {
-      throw new Error("User not logged in");
-    }
-
-    return session.user;
-  }
-
   async function getProfile() {
     try {
       setLoading(true);
       const user = await getCurrentUser();
 
-      let { data, error, status } = await supabase
-        .from("profiles")
-        .select(`username, website, avatar_url`)
-        .eq("id", user.id)
-        .single();
+      const { data, error, status } = await getProfileQuery(user);
 
       if (error && status !== 406) {
         throw error;
@@ -54,7 +42,8 @@ export default function Account({ session }: { session: Session }) {
         setAvatarUrl(data.avatar_url);
       }
     } catch (error) {
-      console.error("error", error);
+      const { message } = error as PostgrestError;
+      alert(message);
     } finally {
       setLoading(false);
     }
